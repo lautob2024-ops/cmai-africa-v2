@@ -7,4 +7,4 @@ Disallow: /communaute
 Disallow: /discussions
 Disallow: /api/
 
-Sitemap: https://www.cmaiplusafrica.com/sitemap.xml
+Sitemap: https://cmai-plus-africa.onrender.com/sitemap.xml
