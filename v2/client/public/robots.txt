@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /home
+Disallow: /paiement
+Disallow: /communaute
+Disallow: /discussions
+Disallow: /api/
+
+Sitemap: https://www.cmaiplusafrica.com/sitemap.xml
