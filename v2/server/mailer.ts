@@ -4,7 +4,11 @@ import { storagePath } from "./storage";
 import { ENV } from "./env";
 
 const from = process.env.SMTP_FROM || "cmai.africa2026@gmail.com";
-const transporter = process.env.SMTP_PASS
+const brevoKey = process.env.BREVO_API_KEY;
+
+// Brevo envoie par API HTTPS (port 443), qui n'est jamais bloqué — contrairement au SMTP (465/587)
+// que la plupart des hébergeurs gratuits (dont Render) bloquent pour lutter contre le spam.
+const transporter = !brevoKey && process.env.SMTP_PASS
   ? nodemailer.createTransport({
       host: process.env.SMTP_HOST || "smtp.gmail.com",
       port: Number(process.env.SMTP_PORT || 465),
@@ -13,7 +17,7 @@ const transporter = process.env.SMTP_PASS
     })
   : null;
 
-export const emailConfigured = () => Boolean(transporter);
+export const emailConfigured = () => Boolean(brevoKey) || Boolean(transporter);
 export const emailSender = () => from;
 
 export const esc = (value: unknown) =>
@@ -21,14 +25,33 @@ export const esc = (value: unknown) =>
 
 export type MailAttachment = { filename: string; content?: Buffer; path?: string; contentType?: string };
 
+async function sendViaBrevo(to: string, subject: string, html: string, attachments?: MailAttachment[]) {
+  const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+    method: "POST",
+    headers: { "api-key": brevoKey!, "content-type": "application/json", accept: "application/json" },
+    body: JSON.stringify({
+      sender: { name: "CMAI+Africa", email: from },
+      to: [{ email: to }],
+      subject,
+      htmlContent: html,
+      attachment: attachments?.map(file => ({ name: file.filename, content: (file.content ?? Buffer.alloc(0)).toString("base64") })),
+    }),
+  });
+  if (!response.ok) {
+    const detail = await response.text().catch(() => "");
+    throw new Error(`Brevo a refusé l'envoi (${response.status}). ${detail.slice(0, 300)}`);
+  }
+}
+
 /** Envoie un e-mail. Ne lève jamais d'exception : retourne false en cas d'échec. */
 export async function sendEmail(to: string, subject: string, html: string, attachments?: MailAttachment[]) {
-  if (!transporter) {
-    console.warn(`[Mailer] SMTP_PASS manquant : e-mail non envoyé à ${to} (${subject})`);
+  if (!brevoKey && !transporter) {
+    console.warn(`[Mailer] Aucun service d'e-mail configuré (BREVO_API_KEY ou SMTP_PASS) : e-mail non envoyé à ${to} (${subject})`);
     return false;
   }
   try {
-    await transporter.sendMail({ from: `CMAI+Africa <${from}>`, to, subject, html, attachments });
+    if (brevoKey) await sendViaBrevo(to, subject, html, attachments);
+    else await transporter!.sendMail({ from: `CMAI+Africa <${from}>`, to, subject, html, attachments });
     return true;
   } catch (error) {
     console.error(`[Mailer] Échec de l'envoi à ${to} :`, error instanceof Error ? error.message : error);
