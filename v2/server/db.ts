@@ -13,12 +13,14 @@ let _db: MySql2Database | null = null;
 export async function getDb() {
   if (!_db && ENV.databaseUrl) {
     try {
+      const needsSsl = /ssl(-|_)?mode=require|ssl=true/i.test(ENV.databaseUrl);
       const pool = mysql.createPool({
         uri: ENV.databaseUrl,
         connectionLimit: 10,
         enableKeepAlive: true,
         timezone: "Z",
         charset: "utf8mb4",
+        ...(needsSsl ? { ssl: { minVersion: "TLSv1.2", rejectUnauthorized: false } } : {}),
       });
       _db = drizzle(pool);
     } catch (error) {
