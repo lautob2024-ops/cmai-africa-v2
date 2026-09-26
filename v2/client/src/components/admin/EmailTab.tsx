@@ -64,7 +64,7 @@ export function EmailTab({ presetTo }: { presetTo: string }) {
             <datalist id="member-emails">
               {users.data?.filter(item => item.email && item.isActive).map(item => { const n = splitName(item); return <option key={item.id} value={item.email as string}>{`${n.first} ${n.last}`.trim()}</option>; })}
             </datalist>
-            <span className="mt-1 block text-xs text-[#718078]">Plusieurs adresses possibles, séparées par des virgules.</span>
+            <span className="mt-1 block text-xs text-[#5b6b82]">Plusieurs adresses possibles, séparées par des virgules.</span>
           </label>
         )}
         <label className="block"><span className={label}>Objet *</span><input className={input} required minLength={3} maxLength={180} value={subject} onChange={event => setSubject(event.target.value)} /></label>
@@ -73,7 +73,7 @@ export function EmailTab({ presetTo }: { presetTo: string }) {
           <span className={label}>Pièces jointes (5 maximum · PDF, images, Word, Excel, PowerPoint, ZIP · 20 Mo)</span>
           <ul className="mt-2 space-y-2">
             {files.map(file => (
-              <li key={file.key} className="flex items-center gap-2 rounded-xl bg-[#f6f5f0] px-3 py-2 text-sm"><FileText className="h-4 w-4" /><span className="min-w-0 flex-1 truncate">{file.name}</span><button type="button" aria-label={`Retirer ${file.name}`} onClick={() => setFiles(current => current.filter(item => item.key !== file.key))}><X className="h-4 w-4" /></button></li>
+              <li key={file.key} className="flex items-center gap-2 rounded-xl bg-[#eef1f7] px-3 py-2 text-sm"><FileText className="h-4 w-4" /><span className="min-w-0 flex-1 truncate">{file.name}</span><button type="button" aria-label={`Retirer ${file.name}`} onClick={() => setFiles(current => current.filter(item => item.key !== file.key))}><X className="h-4 w-4" /></button></li>
             ))}
           </ul>
           <button type="button" disabled={uploading || files.length >= 5} onClick={() => picker.current?.click()} className={btnGhost + " mt-2"}>{uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Paperclip className="h-4 w-4" />} Ajouter un fichier</button>

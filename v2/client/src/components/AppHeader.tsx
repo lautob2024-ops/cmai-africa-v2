@@ -21,25 +21,25 @@ export function AppHeader({ title }: { title?: string }) {
   const { user, logout } = useAuth();
   const [location] = useLocation();
   return (
-    <header className="sticky top-0 z-40 border-b border-[#e2dfd5] bg-white/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-[#dbe1ea] bg-white/90 backdrop-blur-xl">
       <div className="container flex h-[68px] items-center justify-between gap-3">
         <Link href="/home" aria-label="Retour à l'espace membre"><BrandMark /></Link>
-        {title && <span className="hidden truncate text-sm font-semibold text-[#193f36] md:block">{title}</span>}
+        {title && <span className="hidden truncate text-sm font-semibold text-[#14213d] md:block">{title}</span>}
         <Sheet>
           <SheetTrigger asChild>
-            <button type="button" aria-label="Ouvrir le menu" className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#d9d6cf] bg-white text-[#193f36] transition hover:border-[#193f36]">
+            <button type="button" aria-label="Ouvrir le menu" className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#cfd6e2] bg-white text-[#14213d] transition hover:border-[#14213d]">
               <Menu className="h-6 w-6" />
             </button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-[300px] border-l border-[#e2dfd5] bg-[#f8f7f3] p-0 sm:max-w-[320px]">
-            <SheetHeader className="border-b border-[#e2dfd5] p-5 text-left">
-              <SheetTitle className="font-display text-xl text-[#193f36]">Navigation</SheetTitle>
+          <SheetContent side="right" className="w-[300px] border-l border-[#dbe1ea] bg-[#f5f7fb] p-0 sm:max-w-[320px]">
+            <SheetHeader className="border-b border-[#dbe1ea] p-5 text-left">
+              <SheetTitle className="font-display text-xl text-[#14213d]">Navigation</SheetTitle>
               <SheetDescription className="truncate text-xs">{user ? `${user.firstName || user.name || ""} · ${user.email ?? ""}` : "Menu"}</SheetDescription>
             </SheetHeader>
             <nav className="flex flex-col gap-1 p-3" aria-label="Menu principal">
               {items.map(({ to, label, icon: Icon }) => (
                 <SheetClose asChild key={to}>
-                  <Link href={to} className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition ${location.startsWith(to) ? "bg-[#193f36] text-white" : "text-[#3f4d46] hover:bg-white"}`}>
+                  <Link href={to} className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition ${location.startsWith(to) ? "bg-[#14213d] text-white" : "text-[#3a4658] hover:bg-white"}`}>
                     <Icon className="h-4 w-4" /> {label}
                   </Link>
                 </SheetClose>

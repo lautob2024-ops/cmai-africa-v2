@@ -52,15 +52,15 @@ export async function buildReceiptPdf(input: ReceiptInput): Promise<Buffer> {
     }
   }
   if (!logoDrawn) {
-    doc.circle(90, 80, 36).fill("#193f36");
-    doc.fillColor("#f6c65a").font("Helvetica-Bold").fontSize(15).text("CMAI+", 62, 73, { width: 56, align: "center" });
+    doc.circle(90, 80, 36).fill("#14213d");
+    doc.fillColor("#b9c4d6").font("Helvetica-Bold").fontSize(15).text("CMAI+", 62, 73, { width: 56, align: "center" });
   }
-  doc.fillColor("#193f36").font("Helvetica-Bold").fontSize(24).text("CMAI+Africa", 146, 56);
-  doc.fillColor("#eb6a3d").font("Helvetica").fontSize(9).text("CLUB OF MATHEMATICS AND ARTIFICIAL INTELLIGENCE", 146, 86, { characterSpacing: 0.6 });
-  doc.moveTo(52, 138).lineTo(543, 138).lineWidth(1).strokeColor("#d9d6cf").stroke();
+  doc.fillColor("#14213d").font("Helvetica-Bold").fontSize(24).text("CMAI+Africa", 146, 56);
+  doc.fillColor("#2f6fed").font("Helvetica").fontSize(9).text("CLUB OF MATHEMATICS AND ARTIFICIAL INTELLIGENCE", 146, 86, { characterSpacing: 0.6 });
+  doc.moveTo(52, 138).lineTo(543, 138).lineWidth(1).strokeColor("#cfd6e2").stroke();
 
-  doc.fillColor("#193f36").font("Helvetica-Bold").fontSize(20).text("QUITTANCE DE PAIEMENT", 52, 162);
-  doc.fillColor("#718078").font("Helvetica").fontSize(10).text(`N° ${receiptNumber(input.paymentId, input.paidAt)}`, 52, 190);
+  doc.fillColor("#14213d").font("Helvetica-Bold").fontSize(20).text("QUITTANCE DE PAIEMENT", 52, 162);
+  doc.fillColor("#5b6b82").font("Helvetica").fontSize(10).text(`N° ${receiptNumber(input.paymentId, input.paidAt)}`, 52, 190);
 
   const when = input.paidAt.toLocaleString("fr-FR", { timeZone: "Africa/Lagos", dateStyle: "long", timeStyle: "short" });
   const rows: [string, string][] = [
@@ -76,14 +76,14 @@ export async function buildReceiptPdf(input: ReceiptInput): Promise<Buffer> {
   ];
   let y = 226;
   rows.forEach(([label, value], index) => {
-    doc.roundedRect(52, y - 6, 491, 32, 5).fill(index % 2 ? "#faf9f6" : "#ffffff");
-    doc.fillColor("#193f36").font("Helvetica-Bold").fontSize(10).text(label, 68, y + 4, { width: 170 });
-    doc.fillColor("#3f4d46").font("Helvetica").fontSize(10.5).text(value || "—", 245, y + 4, { width: 285, ellipsis: true, height: 16 });
+    doc.roundedRect(52, y - 6, 491, 32, 5).fill(index % 2 ? "#f6f8fb" : "#ffffff");
+    doc.fillColor("#14213d").font("Helvetica-Bold").fontSize(10).text(label, 68, y + 4, { width: 170 });
+    doc.fillColor("#3a4658").font("Helvetica").fontSize(10.5).text(value || "—", 245, y + 4, { width: 285, ellipsis: true, height: 16 });
     y += 38;
   });
 
   doc.fillColor("#2e7d56").font("Helvetica-Bold").fontSize(13).text("PAIEMENT CONFIRMÉ", 52, y + 22);
-  doc.fillColor("#718078").font("Helvetica").fontSize(9).text("Cette quittance est générée automatiquement par CMAI+Africa après confirmation du paiement. Conservez-la comme justificatif.", 52, y + 50, { width: 491 });
+  doc.fillColor("#5b6b82").font("Helvetica").fontSize(9).text("Cette quittance est générée automatiquement par CMAI+Africa après confirmation du paiement. Conservez-la comme justificatif.", 52, y + 50, { width: 491 });
   doc.end();
   return finished;
 }

@@ -22,8 +22,8 @@ const About = lazy(() => import("./pages/About"));
 const Admin = lazy(() => import("./pages/Admin"));
 
 const Loading = () => (
-  <div className="flex min-h-screen items-center justify-center bg-[#f8f7f3]" role="status" aria-label="Chargement">
-    <Loader2 className="h-7 w-7 animate-spin text-[#eb6a3d]" />
+  <div className="flex min-h-screen items-center justify-center bg-[#f5f7fb]" role="status" aria-label="Chargement">
+    <Loader2 className="h-7 w-7 animate-spin text-[#2f6fed]" />
   </div>
 );
 

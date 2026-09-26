@@ -48,7 +48,7 @@ export async function attachmentFromKey(key: string, filename?: string): Promise
 }
 
 const shell = (title: string, body: string) =>
-  `<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#193f36;max-width:560px;margin:auto"><h1 style="font-size:22px;margin:0 0 12px">${title}</h1>${body}<p style="margin-top:24px;color:#718078;font-size:13px">L'équipe CMAI+Africa${ENV.baseUrl ? ` · <a href="${ENV.baseUrl}" style="color:#eb6a3d">${ENV.baseUrl.replace(/^https?:\/\//, "")}</a>` : ""}</p></div>`;
+  `<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#14213d;max-width:560px;margin:auto"><h1 style="font-size:22px;margin:0 0 12px">${title}</h1>${body}<p style="margin-top:24px;color:#5b6b82;font-size:13px">L'équipe CMAI+Africa${ENV.baseUrl ? ` · <a href="${ENV.baseUrl}" style="color:#2f6fed">${ENV.baseUrl.replace(/^https?:\/\//, "")}</a>` : ""}</p></div>`;
 
 export const sendVerificationEmail = (to: string, name: string, code: string) =>
   sendEmail(to, "Votre code de vérification CMAI+Africa", shell("Confirmez votre adresse e-mail",
@@ -85,4 +85,4 @@ export async function sendCertificateEmail(to: string, name: string, course: str
 }
 
 export const sendAdminMessage = (to: string, subject: string, message: string, attachments?: MailAttachment[]) =>
-  sendEmail(to, subject, `<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#193f36;white-space:pre-wrap">${esc(message)}</div>`, attachments);
+  sendEmail(to, subject, `<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#14213d;white-space:pre-wrap">${esc(message)}</div>`, attachments);

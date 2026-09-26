@@ -10,10 +10,10 @@ export function BrandMark() {
     <span className="flex items-center gap-3">
       <Logo className="shadow-[0_8px_20px_rgba(25,63,54,0.18)]" />
       <span className="leading-none">
-        <span className="block font-display text-[1.02rem] font-semibold tracking-[-0.03em] text-[#17231f]">
-          CMAI<span className="text-[#eb6a3d]">+</span>AFRICA
+        <span className="block font-display text-[1.02rem] font-semibold tracking-[-0.03em] text-[#0f1b2d]">
+          CMAI<span className="text-[#2f6fed]">+</span>AFRICA
         </span>
-        <span className="mt-1 block text-[0.58rem] font-semibold uppercase tracking-[0.18em] text-[#718078]">Learn · Experiment · Innovate</span>
+        <span className="mt-1 block text-[0.58rem] font-semibold uppercase tracking-[0.18em] text-[#5b6b82]">Learn · Experiment · Innovate</span>
       </span>
     </span>
   );

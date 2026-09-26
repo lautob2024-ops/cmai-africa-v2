@@ -35,20 +35,20 @@ export function MembersTab({ onWrite }: { onWrite: (email: string) => void }) {
       <Card title={`Membres (${list.length})`} subtitle="Toutes les informations saisies à l'inscription. Le compte d'un membre retiré est désactivé (réversible) ; la suppression définitive efface ses données personnelles." actions={<button onClick={exportCsv} className={btnGhost}><Download className="h-4 w-4" /> Exporter en CSV</button>}>
         <div className="mb-4 flex flex-wrap gap-3">
           <div className="relative min-w-[240px] flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9aa49d]" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a96ab]" />
             <input className="form-input !mt-0 !h-11 pl-10" placeholder="Rechercher (nom, e-mail, ville, université…)" value={search} onChange={event => setSearch(event.target.value)} />
           </div>
           <select className="form-input !mt-0 !h-11 !w-auto" value={filter} onChange={event => setFilter(event.target.value as typeof filter)} aria-label="Filtrer les membres">
             <option value="all">Tous</option><option value="students">Étudiants</option><option value="active">Actifs</option><option value="removed">Retirés</option>
           </select>
         </div>
-        {users.isLoading && <Loader2 className="h-5 w-5 animate-spin text-[#eb6a3d]" />}
+        {users.isLoading && <Loader2 className="h-5 w-5 animate-spin text-[#2f6fed]" />}
         <DataTable head={["Nom", "Prénom", "Sexe", "Pays", "Ville", "Téléphone", "E-mail", "Profession / statut", "Niveau", "Université", "Statut", "Actions"]} empty={list.length === 0 && !users.isLoading ? "Aucun membre trouvé." : undefined}>
           {list.map(user => {
             const n = splitName(user);
             return (
               <tr key={user.id} className={user.isActive ? "" : "bg-[#faf6f4] opacity-80"}>
-                <Td className="font-semibold text-[#193f36]">{n.last || "—"}</Td><Td>{n.first || "—"}</Td><Td>{user.gender ?? "—"}</Td><Td>{user.country ?? "—"}</Td><Td>{user.city ?? "—"}</Td>
+                <Td className="font-semibold text-[#14213d]">{n.last || "—"}</Td><Td>{n.first || "—"}</Td><Td>{user.gender ?? "—"}</Td><Td>{user.country ?? "—"}</Td><Td>{user.city ?? "—"}</Td>
                 <Td className="whitespace-nowrap">{user.phone ?? "—"}</Td><Td>{user.email}</Td><Td>{user.profession ?? "—"}</Td><Td>{user.educationLevel ?? "—"}</Td><Td className="min-w-[160px]">{user.university ?? "—"}</Td>
                 <Td>
                   <div className="flex flex-col items-start gap-1">
@@ -76,7 +76,7 @@ export function MembersTab({ onWrite }: { onWrite: (email: string) => void }) {
       <Card title={`Inscriptions au club (${legacy.data?.length ?? 0})`} subtitle="Personnes inscrites via le formulaire public de la page d'accueil (sans compte).">
         <DataTable head={["Nom", "E-mail", "Téléphone", "Pays / ville", "Profil", "Centres d'intérêt", "Date"]} empty={legacy.data?.length === 0 ? "Aucune inscription." : undefined}>
           {legacy.data?.map(item => (
-            <tr key={item.id}><Td className="font-semibold text-[#193f36]">{item.firstName} {item.lastName}</Td><Td>{item.email}</Td><Td>{item.phone ?? "—"}</Td><Td>{item.country}{item.city ? ` · ${item.city}` : ""}</Td><Td>{item.profileType}</Td><Td>{item.interests}</Td><Td>{formatDate(item.createdAt)}</Td></tr>
+            <tr key={item.id}><Td className="font-semibold text-[#14213d]">{item.firstName} {item.lastName}</Td><Td>{item.email}</Td><Td>{item.phone ?? "—"}</Td><Td>{item.country}{item.city ? ` · ${item.city}` : ""}</Td><Td>{item.profileType}</Td><Td>{item.interests}</Td><Td>{formatDate(item.createdAt)}</Td></tr>
           ))}
         </DataTable>
       </Card>

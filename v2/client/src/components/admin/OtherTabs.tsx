@@ -18,14 +18,14 @@ export function OverviewTab({ go }: { go: (tab: string) => void }) {
     : [];
   return (
     <div className="space-y-6">
-      {stats.isLoading && <Loader2 className="h-6 w-6 animate-spin text-[#eb6a3d]" />}
+      {stats.isLoading && <Loader2 className="h-6 w-6 animate-spin text-[#2f6fed]" />}
       <div className="grid gap-4 md:grid-cols-3">
         {items.map(item => (
-          <button key={item.label} onClick={() => go(item.tab)} className="rounded-3xl border border-[#e2dfd5] bg-white p-6 text-left transition hover:-translate-y-0.5 hover:border-[#193f36]">
-            <item.icon className="h-6 w-6 text-[#eb6a3d]" />
-            <p className="mt-4 font-display text-4xl font-semibold text-[#193f36]">{item.value}</p>
-            <p className="mt-1 text-sm font-semibold text-[#3f4d46]">{item.label}</p>
-            <p className="text-xs text-[#718078]">{item.sub}</p>
+          <button key={item.label} onClick={() => go(item.tab)} className="rounded-3xl border border-[#dbe1ea] bg-white p-6 text-left transition hover:-translate-y-0.5 hover:border-[#14213d]">
+            <item.icon className="h-6 w-6 text-[#2f6fed]" />
+            <p className="mt-4 font-display text-4xl font-semibold text-[#14213d]">{item.value}</p>
+            <p className="mt-1 text-sm font-semibold text-[#3a4658]">{item.label}</p>
+            <p className="text-xs text-[#5b6b82]">{item.sub}</p>
           </button>
         ))}
       </div>
@@ -70,10 +70,10 @@ export function PostsTab() {
           </div>
           <label className="block"><span className={label}>Résumé (10 caractères minimum) *</span><input className={input} required minLength={10} maxLength={500} value={form.excerpt} onChange={event => setForm({ ...form, excerpt: event.target.value })} /></label>
           <label className="block"><span className={label}>Contenu (20 caractères minimum) *</span><textarea className={input + " !h-auto py-3"} rows={7} required minLength={20} value={form.body} onChange={event => setForm({ ...form, body: event.target.value })} /></label>
-          <label className="flex items-center gap-3 text-sm font-semibold text-[#193f36]"><input type="checkbox" className="h-4 w-4 accent-[#193f36]" checked={form.isPremium} onChange={event => setForm({ ...form, isPremium: event.target.checked })} /> Contenu réservé (le corps du texte est masqué aux membres)</label>
+          <label className="flex items-center gap-3 text-sm font-semibold text-[#14213d]"><input type="checkbox" className="h-4 w-4 accent-[#14213d]" checked={form.isPremium} onChange={event => setForm({ ...form, isPremium: event.target.checked })} /> Contenu réservé (le corps du texte est masqué aux membres)</label>
           <div>
             <span className={label}>Fichiers joints</span>
-            <ul className="mt-2 space-y-2">{files.map(file => <li key={file.key} className="flex items-center gap-2 rounded-xl bg-[#f6f5f0] px-3 py-2 text-sm"><FileText className="h-4 w-4" /><span className="flex-1 truncate">{file.name}</span><button type="button" aria-label="Retirer" onClick={() => setFiles(current => current.filter(item => item.key !== file.key))}><X className="h-4 w-4" /></button></li>)}</ul>
+            <ul className="mt-2 space-y-2">{files.map(file => <li key={file.key} className="flex items-center gap-2 rounded-xl bg-[#eef1f7] px-3 py-2 text-sm"><FileText className="h-4 w-4" /><span className="flex-1 truncate">{file.name}</span><button type="button" aria-label="Retirer" onClick={() => setFiles(current => current.filter(item => item.key !== file.key))}><X className="h-4 w-4" /></button></li>)}</ul>
             <button type="button" disabled={busy} onClick={() => picker.current?.click()} className={btnGhost + " mt-2"}>{busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Paperclip className="h-4 w-4" />} Ajouter un fichier</button>
             <input ref={picker} type="file" multiple className="sr-only" onChange={event => { void addFiles(event.target.files); event.target.value = ""; }} />
           </div>
@@ -83,7 +83,7 @@ export function PostsTab() {
       <Card title={`Publications (${posts.data?.length ?? 0})`}>
         <DataTable head={["Titre", "Type", "Fichiers", "Date", "État", "Actions"]} empty={posts.data?.length === 0 ? "Aucune publication." : undefined}>
           {posts.data?.map(post => (
-            <tr key={post.id}><Td className="font-semibold text-[#193f36]">{post.title}</Td><Td>{TYPES[post.type]}</Td><Td>{post.attachments.length}</Td><Td>{formatDate(post.createdAt)}</Td>
+            <tr key={post.id}><Td className="font-semibold text-[#14213d]">{post.title}</Td><Td>{TYPES[post.type]}</Td><Td>{post.attachments.length}</Td><Td>{formatDate(post.createdAt)}</Td>
               <Td>{post.isPublished ? <Badge color="green">En ligne</Badge> : <Badge color="orange">Masquée</Badge>}</Td>
               <Td><div className="flex gap-2"><button className={btnGhost + " !px-3 !py-1.5 !text-xs"} onClick={() => toggle.mutate({ id: post.id, published: !post.isPublished })}>{post.isPublished ? "Masquer" : "Publier"}</button><button className={btnDanger} onClick={() => window.confirm("Supprimer cette publication ?") && remove.mutate({ id: post.id })}>Supprimer</button></div></Td></tr>
           ))}
@@ -107,7 +107,7 @@ export function PaymentsTab() {
           return (
             <tr key={item.id}>
               <Td className="whitespace-nowrap">{formatDate(item.paidAt ?? item.createdAt, true)}</Td>
-              <Td><span className="font-semibold text-[#193f36]">{item.userName ?? "—"}</span><br /><span className="text-xs">{item.userEmail}</span></Td>
+              <Td><span className="font-semibold text-[#14213d]">{item.userName ?? "—"}</span><br /><span className="text-xs">{item.userEmail}</span></Td>
               <Td>{item.courseTitle ?? `#${item.courseId}`}</Td>
               <Td className="whitespace-nowrap">{item.chargedAmount ? `${item.chargedAmount.toLocaleString("fr-FR")} XOF` : `${(item.amountCents / 100).toLocaleString("fr-FR")} ${item.currency}`}</Td>
               <Td>{item.method.toUpperCase()}</Td><Td className="whitespace-nowrap">{item.payerPhone}</Td><Td className="text-xs">{item.transactionReference ?? "—"}</Td>
@@ -135,7 +135,7 @@ export function ProgressTab() {
       <DataTable head={["Membre", "Cours n°", "Chapitres", "Progression", "Temps passé", "Score moyen quiz", "Terminé le"]} empty={progress.data?.length === 0 ? "Aucune activité pour le moment." : undefined}>
         {progress.data?.map(item => (
           <tr key={item.id}>
-            <Td><span className="font-semibold text-[#193f36]">{item.userName}</span><br /><span className="text-xs">{item.userEmail}</span></Td>
+            <Td><span className="font-semibold text-[#14213d]">{item.userName}</span><br /><span className="text-xs">{item.userEmail}</span></Td>
             <Td>{item.courseId}</Td>
             <Td>{item.chapterCount ? `${item.completedChapters} / ${item.chapterCount}` : "—"}</Td>
             <Td><Badge color={item.percent >= 100 ? "green" : "gold"}>{item.percent} %</Badge></Td>
@@ -166,7 +166,7 @@ export function CertificatesTab() {
         {requests.data?.map(item => (
           <tr key={item.id}>
             <Td className="whitespace-nowrap">{formatDate(item.requestedAt)}</Td>
-            <Td><span className="font-semibold text-[#193f36]">{item.userName}</span><br /><span className="text-xs">{item.userEmail}</span></Td>
+            <Td><span className="font-semibold text-[#14213d]">{item.userName}</span><br /><span className="text-xs">{item.userEmail}</span></Td>
             <Td>{item.courseTitle}</Td><Td className="max-w-[260px]">{item.message}</Td>
             <Td><Badge color={item.status === "issued" ? "green" : item.status === "pending" ? "gold" : "orange"}>{item.status === "issued" ? "Délivré" : item.status === "pending" ? "À traiter" : "Refusé"}</Badge></Td>
             <Td>
@@ -189,14 +189,14 @@ export function CertificatesTab() {
 export function StudentsTab() {
   const apps = trpc.student.list.useQuery();
   const review = trpc.student.review.useMutation({ onSuccess: () => { toast.success("Décision enregistrée et envoyée au membre."); void apps.refetch(); }, onError: error => toast.error(error.message) });
-  const doc = (key: string | null, text: string) => key ? <a key={text} href={fileHref(key)} target="_blank" rel="noreferrer" className="block font-semibold text-[#eb6a3d] hover:underline">{text}</a> : null;
+  const doc = (key: string | null, text: string) => key ? <a key={text} href={fileHref(key)} target="_blank" rel="noreferrer" className="block font-semibold text-[#2f6fed] hover:underline">{text}</a> : null;
   return (
     <Card title="Demandes d'accès étudiant" subtitle="Les justificatifs sont privés : seuls les administrateurs peuvent les ouvrir.">
       <DataTable head={["Date", "Étudiant", "Établissement", "Filière / niveau", "Motivation", "Documents", "État", "Actions"]} empty={apps.data?.length === 0 ? "Aucune demande." : undefined}>
         {apps.data?.map(item => (
           <tr key={item.id}>
             <Td className="whitespace-nowrap">{formatDate(item.createdAt)}</Td>
-            <Td><span className="font-semibold text-[#193f36]">{item.firstName} {item.lastName}</span><br /><span className="text-xs">{item.email} · {item.country}</span></Td>
+            <Td><span className="font-semibold text-[#14213d]">{item.firstName} {item.lastName}</span><br /><span className="text-xs">{item.email} · {item.country}</span></Td>
             <Td>{item.schoolName}<br /><span className="text-xs">{item.schoolType}</span></Td><Td>{item.fieldOfStudy}<br /><span className="text-xs">{item.educationLevel}</span></Td>
             <Td className="max-w-[240px] text-xs">{item.motivation}</Td>
             <Td>{doc(item.studentProofKey, "Preuve de scolarité")}{doc(item.identityProofKey, "Pièce d'identité")}{doc(item.additionalProofKey, "Complément")}</Td>

@@ -10,18 +10,18 @@ export function PageShell({ title, kicker, description, children, wide }: { titl
   useSeo({ title, noindex: true });
   if (!ready) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#f8f7f3]" role="status" aria-label="Chargement">
-        <Loader2 className="h-6 w-6 animate-spin text-[#eb6a3d]" />
+      <div className="flex min-h-screen items-center justify-center bg-[#f5f7fb]" role="status" aria-label="Chargement">
+        <Loader2 className="h-6 w-6 animate-spin text-[#2f6fed]" />
       </div>
     );
   }
   return (
-    <div className="min-h-screen bg-[#f8f7f3] text-[#17231f]">
+    <div className="min-h-screen bg-[#f5f7fb] text-[#0f1b2d]">
       <AppHeader title={title} />
       <main className={`container py-10 md:py-14 ${wide ? "" : "max-w-6xl"}`}>
         {kicker && <div className="section-kicker">{kicker}</div>}
-        <h1 className="mt-3 font-display text-4xl font-semibold leading-[1] tracking-[-0.06em] text-[#193f36] md:text-5xl">{title}</h1>
-        {description && <p className="mt-4 max-w-2xl leading-7 text-[#596961]">{description}</p>}
+        <h1 className="mt-3 font-display text-4xl font-semibold leading-[1] tracking-[-0.06em] text-[#14213d] md:text-5xl">{title}</h1>
+        {description && <p className="mt-4 max-w-2xl leading-7 text-[#51617a]">{description}</p>}
         <div className="mt-9">{children}</div>
       </main>
     </div>
