@@ -69,7 +69,10 @@ export function PostsTab() {
             <label className="block"><span className={label}>Type *</span><select className={input} value={form.type} onChange={event => setForm({ ...form, type: event.target.value })}>{Object.entries(TYPES).map(([key, text]) => <option key={key} value={key}>{text}</option>)}</select></label>
           </div>
           <label className="block"><span className={label}>Résumé (10 caractères minimum) *</span><input className={input} required minLength={10} maxLength={500} value={form.excerpt} onChange={event => setForm({ ...form, excerpt: event.target.value })} /></label>
-          <label className="block"><span className={label}>Contenu (20 caractères minimum) *</span><textarea className={input + " !h-auto py-3"} rows={7} required minLength={20} value={form.body} onChange={event => setForm({ ...form, body: event.target.value })} /></label>
+          <div>
+            <span className={label}>Contenu (20 caractères minimum) *</span>
+            <textarea className={input} rows={7} required minLength={20} value={form.body} onChange={event => setForm({ ...form, body: event.target.value })} />
+          </div>
           <label className="flex items-center gap-3 text-sm font-semibold text-[#14213d]"><input type="checkbox" className="h-4 w-4 accent-[#14213d]" checked={form.isPremium} onChange={event => setForm({ ...form, isPremium: event.target.checked })} /> Contenu réservé (le corps du texte est masqué aux membres)</label>
           <div>
             <span className={label}>Fichiers joints</span>

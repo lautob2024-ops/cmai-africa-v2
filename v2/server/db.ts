@@ -3,7 +3,7 @@ import { drizzle, type MySql2Database } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
 import {
   certificateRequests, chapterProgress, connectionRequests, conversationMembers, courseProgress, discussionComments,
-  discussions, institutions, members, messages, postAttachments, postComments, postReactions, posts,
+  articleComments, articleReactions, discussions, institutions, members, messages, postAttachments, postComments, postReactions, posts,
   studentApplications, userPosts, users,
 } from "../drizzle/schema";
 import { ENV } from "./env";
@@ -80,6 +80,10 @@ export async function updateUser(id: number, values: UserUpdate) {
 }
 
 /** Vue « sûre » d'un utilisateur : jamais de hash de mot de passe ni de code de vérification. */
+const safeUserComment = {
+  authorFirstName: users.firstName, authorLastName: users.lastName, authorName: users.name, authorRole: users.role,
+};
+
 export const safeUserColumns = {
   id: users.id, name: users.name, firstName: users.firstName, lastName: users.lastName, email: users.email,
   gender: users.gender, phone: users.phone, country: users.country, city: users.city, address: users.address,
@@ -192,6 +196,25 @@ export async function reviewStudentApplication(id: number, status: "approved" | 
 
 /* ───────────── Publications du site ───────────── */
 
+export async function listPostLikes(postIds: number[], userId?: number) {
+  const db = await getDb();
+  if (!db || !postIds.length) return { counts: new Map<number, number>(), mine: new Set<number>() };
+  const rows = await db.select({ postId: articleReactions.postId, userId: articleReactions.userId }).from(articleReactions).where(inArray(articleReactions.postId, postIds));
+  const counts = new Map<number, number>();
+  for (const row of rows) counts.set(row.postId, (counts.get(row.postId) ?? 0) + 1);
+  const mine = new Set(userId ? rows.filter(row => row.userId === userId).map(row => row.postId) : []);
+  return { counts, mine };
+}
+
+/** Bascule le « J'aime » d'un membre sur un article : l'ajoute s'il n'y était pas, le retire sinon. */
+export async function toggleArticleLike(userId: number, postId: number) {
+  const db = await requireDb();
+  const existing = (await db.select().from(articleReactions).where(and(eq(articleReactions.postId, postId), eq(articleReactions.userId, userId))).limit(1))[0];
+  if (existing) await db.delete(articleReactions).where(eq(articleReactions.id, existing.id));
+  else await db.insert(articleReactions).values({ postId, userId });
+  return { liked: !existing };
+}
+
 export async function listPosts(includeUnpublished = false) {
   const db = await getDb();
   if (!db) return [];
@@ -201,6 +224,25 @@ export async function listPosts(includeUnpublished = false) {
   if (!rows.length) return [];
   const files = await db.select().from(postAttachments).where(inArray(postAttachments.postId, rows.map(row => row.id)));
   return rows.map(row => ({ ...row, attachments: files.filter(file => file.postId === row.id) }));
+}
+
+export async function listArticleComments(postId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  const rows = await db
+    .select({ id: articleComments.id, body: articleComments.body, createdAt: articleComments.createdAt, userId: articleComments.userId, ...safeUserComment })
+    .from(articleComments)
+    .leftJoin(users, eq(users.id, articleComments.userId))
+    .where(eq(articleComments.postId, postId))
+    .orderBy(articleComments.createdAt);
+  return rows;
+}
+
+export async function createArticleComment(userId: number, postId: number, body: string) {
+  const db = await requireDb();
+  const exists = (await db.select({ id: posts.id }).from(posts).where(eq(posts.id, postId)).limit(1))[0];
+  if (!exists) throw new Error("Publication introuvable.");
+  await db.insert(articleComments).values({ userId, postId, body });
 }
 
 export async function createPost(post: typeof posts.$inferInsert, files: { fileKey: string; fileName: string; mimeType?: string | null }[] = []) {

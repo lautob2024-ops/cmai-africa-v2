@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1790533959191,
+      "tag": "0000_condemned_vector",
+      "breakpoints": true
+    }
+  ]
+}

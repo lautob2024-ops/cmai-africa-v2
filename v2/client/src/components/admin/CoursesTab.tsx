@@ -1,9 +1,10 @@
 import { trpc } from "@/lib/trpc";
 import { fileHref, uploadFile } from "@/lib/upload";
+import { insertAtCursor } from "@/lib/textInsert";
 import { formatPrice } from "@/lib/format";
 import type { AppRouter } from "../../../../server/routers";
 import type { inferRouterOutputs } from "@trpc/server";
-import { ChevronDown, ChevronUp, FileText, Loader2, Paperclip, Plus, Save, Trash2, X } from "lucide-react";
+import { ChevronDown, ChevronUp, Code2, FileText, ImagePlus, Loader2, Paperclip, Plus, Save, Trash2, X } from "lucide-react";
 import { FormEvent, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Badge, btn, btnDanger, btnGhost, btnOrange, Card, input, label } from "./kit";
@@ -89,6 +90,38 @@ function QuizEditor({ chapter, onSaved }: { chapter: ChapterT; onSaved: () => vo
 }
 
 /* ───────── Chapitre ───────── */
+export function ContentEditor({ value, onChange, uploadKind, rows = 10 }: { value: string; onChange: (next: string) => void; uploadKind: "course" | "post"; rows?: number }) {
+  const ref = useRef<HTMLTextAreaElement>(null);
+  const filePicker = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const insertCode = () => insertAtCursor(ref.current, value, "\n```python\n# votre code ici\n```\n", onChange);
+  const pickImage = () => filePicker.current?.click();
+  const onImage = async (file?: File) => {
+    if (!file) return;
+    setUploading(true);
+    try {
+      const uploaded = await uploadFile(file, uploadKind);
+      insertAtCursor(ref.current, value, `\n![${uploaded.name}](${uploaded.key})\n`, onChange);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Téléversement impossible.");
+    } finally {
+      setUploading(false);
+    }
+  };
+  return (
+    <div>
+      <div className="mb-2 flex flex-wrap gap-2">
+        <button type="button" onClick={insertCode} className={btnGhost + " !px-3 !py-1.5 !text-xs"}><Code2 className="h-3.5 w-3.5" /> Insérer un bloc de code</button>
+        <button type="button" disabled={uploading} onClick={pickImage} className={btnGhost + " !px-3 !py-1.5 !text-xs"}>{uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ImagePlus className="h-3.5 w-3.5" />} Insérer une image / capture</button>
+        <input ref={filePicker} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={event => { void onImage(event.target.files?.[0]); event.target.value = ""; }} />
+      </div>
+      <textarea ref={ref} className={input + " !h-auto py-3 font-mono text-[0.85rem]"} rows={rows} required value={value} onChange={event => onChange(event.target.value)}
+        placeholder={"# Titre\n\nParagraphe…\n\n- point 1\n- point 2\n\n**gras** pour insister.\n\n```python\nprint('bonjour')\n```"} />
+      <p className="mt-1 text-xs text-[#8a96ab]">Les blocs de code (```) affichent un bouton « Copier » pour les apprenants, dans leur mise en forme d'origine.</p>
+    </div>
+  );
+}
+
 function ChapterForm({ courseId, chapter, nextPosition, onSaved, onCancel }: { courseId: number; chapter?: ChapterT; nextPosition: number; onSaved: () => void; onCancel?: () => void }) {
   const [form, setForm] = useState({ title: chapter?.title ?? "", description: chapter?.description ?? "", content: chapter?.content ?? "", position: chapter?.position ?? nextPosition, minutes: Math.max(0, Math.round((chapter?.requiredSeconds ?? 300) / 60)) });
   const save = trpc.courses.saveChapter.useMutation({
@@ -104,7 +137,10 @@ function ChapterForm({ courseId, chapter, nextPosition, onSaved, onCancel }: { c
         <label className="block"><span className={label}>Temps requis (min)</span><input className={input} type="number" min={0} value={form.minutes} onChange={event => setForm({ ...form, minutes: Number(event.target.value) })} /></label>
       </div>
       <label className="block"><span className={label}>Résumé (facultatif)</span><input className={input} value={form.description} onChange={event => setForm({ ...form, description: event.target.value })} /></label>
-      <label className="block"><span className={label}>Contenu du chapitre *</span><textarea className={input + " !h-auto py-3 font-mono text-[0.85rem]"} rows={10} required value={form.content} onChange={event => setForm({ ...form, content: event.target.value })} placeholder={"# Titre\n\nParagraphe…\n\n- point 1\n- point 2\n\n**gras** pour insister."} /></label>
+      <div>
+        <span className={label}>Contenu du chapitre *</span>
+        <ContentEditor value={form.content} onChange={value => setForm({ ...form, content: value })} uploadKind="course" />
+      </div>
       <div className="flex gap-2">
         <button disabled={save.isPending} className={btn}>{save.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} {chapter ? "Enregistrer" : "Ajouter le chapitre"}</button>
         {onCancel && <button type="button" onClick={onCancel} className={btnGhost}>Fermer</button>}

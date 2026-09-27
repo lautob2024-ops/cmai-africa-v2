@@ -272,9 +272,10 @@ const paymentsRouter = router({
 const postsRouter = router({
   list: publicProcedure.query(async ({ ctx }) => {
     const rows = await db.listPosts(ctx.user?.role === "admin");
+    const likes = await db.listPostLikes(rows.map(row => row.id), ctx.user?.id);
     return rows.map(row => {
       const locked = Boolean(row.isPremium) && ctx.user?.role !== "admin";
-      return { ...row, body: locked ? "" : row.body, locked, attachments: !ctx.user || locked ? [] : row.attachments };
+      return { ...row, body: locked ? "" : row.body, locked, attachments: !ctx.user || locked ? [] : row.attachments, likeCount: likes.counts.get(row.id) ?? 0, likedByMe: likes.mine.has(row.id) };
     });
   }),
   create: adminProcedure.input(z.object({
@@ -296,6 +297,16 @@ const postsRouter = router({
     await db.deletePost(input.id);
     return { success: true };
   }),
+  comments: publicProcedure.input(z.object({ postId: z.number().int().positive() })).query(async ({ input }) => {
+    const rows = await db.listArticleComments(input.postId);
+    return rows.map(row => ({ id: row.id, body: row.body, createdAt: row.createdAt, userId: row.userId, isAdmin: row.authorRole === "admin", authorName: [row.authorFirstName, row.authorLastName].filter(Boolean).join(" ") || row.authorName || "Membre CMAI+Africa" }));
+  }),
+  comment: protectedProcedure.input(z.object({ postId: z.number().int().positive(), body: z.string().trim().min(1).max(2000) })).mutation(async ({ ctx, input }) => {
+    rateLimit(`article-comment:${ctx.user.id}`, 40, 60 * MINUTES);
+    await db.createArticleComment(ctx.user.id, input.postId, input.body);
+    return { success: true };
+  }),
+  like: protectedProcedure.input(z.object({ postId: z.number().int().positive() })).mutation(async ({ ctx, input }) => db.toggleArticleLike(ctx.user.id, input.postId)),
 });
 
 const communityRouter = router({

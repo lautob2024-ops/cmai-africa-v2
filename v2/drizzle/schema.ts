@@ -166,6 +166,13 @@ export const postAttachments = mysqlTable("postAttachments", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
+export const articleReactions = mysqlTable("articleReactions", {
+  id: int("id").autoincrement().primaryKey(),
+  postId: int("postId").notNull(),
+  userId: int("userId").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, table => ({ unique: uniqueIndex("articleReactions_post_user").on(table.postId, table.userId) }));
+
 export const paymentRequests = mysqlTable("paymentRequests", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull(),
@@ -261,6 +268,14 @@ export const postReactions = mysqlTable("postReactions", {
   reaction: varchar("reaction", { length: 30 }).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
+
+export const articleComments = mysqlTable("articleComments", {
+  id: int("id").autoincrement().primaryKey(),
+  postId: int("postId").notNull(),
+  userId: int("userId").notNull(),
+  body: text("body").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, table => ({ byPost: index("articleComments_post").on(table.postId) }));
 
 export const postComments = mysqlTable("postComments", {
   id: int("id").autoincrement().primaryKey(),
